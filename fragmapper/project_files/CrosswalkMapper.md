@@ -1,5 +1,8 @@
 # CrosswalkMapper (Placeholder)
 
+**Version:** 1.1.0  
+**Last-Updated:** 2026-01-10
+
 ## MODE
 MODE: PARFUMO_TO_FRAGRANTICA_URL
 

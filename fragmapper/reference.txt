@@ -3,3 +3,17 @@ C:/Users/skgro/OneDrive/Desktop/FragServices/LLM_ChatGPT_Projects/.venv/Scripts/
 
 C:/Users/skgro/OneDrive/Desktop/FragServices/LLM_ChatGPT_Projects/.venv/Scripts/python.exe tests/test_consistency.py
 
+-----------------------------------------------------
+META:
+Change request detected.
+
+Describe:
+1) What behavior is wrong
+2) Why it violates existing rules
+3) Which file(s) must change
+4) Proposed text change
+5) Version bump required (PATCH/MINOR/MAJOR)
+
+Do not apply the change in execution.
+
+-----------------------------------------------------

@@ -1,7 +1,7 @@
 """
 FragMapper Router - Thin dispatcher for skill modules.
 
-Version: 1.0.0
+Version: 1.1.0
 Last-Updated: 2026-01-10
 
 Purpose:
@@ -44,7 +44,7 @@ class FragMapperRouter:
     Think: dispatcher, not thinker.
     """
 
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"
     LAST_UPDATED = "2026-01-10"
 
     def __init__(self, config_path: Optional[Path] = None):

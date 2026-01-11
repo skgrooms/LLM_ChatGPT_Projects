@@ -3,8 +3,8 @@ CrosswalkMapper Skill - Maps Parfumo URLs to Fragrantica URLs.
 
 Skill: CrosswalkMapper
 Mode: PARFUMO_TO_FRAGRANTICA_URL
-Version: 1.0.0
-Output-Contract: 1.0.0
+Version: 1.1.0
+Output-Contract: 1.1.0
 Last-Updated: 2026-01-10
 
 Status: Placeholder - Not implemented yet
@@ -41,7 +41,7 @@ class CrosswalkMapper(BaseAgent):
         - No match: output exactly NOT_FOUND
     """
 
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"
     MODE = Mode.PARFUMO_TO_FRAGRANTICA_URL
 
     def __init__(self, config: Optional[dict[str, Any]] = None):

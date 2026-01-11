@@ -1,5 +1,8 @@
 # FragMapper Router
 
+**Version:** 1.1.0  
+**Last-Updated:** 2026-01-10
+
 ## Purpose
 You route the user request to exactly one skill module based on MODE.
 

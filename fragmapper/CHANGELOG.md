@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-01-10
+
+### Changed
+- Default to most recent formulation/version when no year is specified and Parfumo has multiple year/version pages for the same fragrance name + concentration
+- Updated ParfumoMapper.md: Step 1 (extraction), Step 3 (scoring preferences and hard rules), and Edge Cases sections
+- Updated fragmapper_rules.yml: Added hard rule for year/version handling
+
 ## [1.0.0] - 2026-01-10
 
 ### Added

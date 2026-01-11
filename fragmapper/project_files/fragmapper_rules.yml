@@ -1,4 +1,4 @@
-version: "1.0"
+version: "1.1.0"
 source: "Derived strictly from Parfumo mapping instructions provided in chat"
 notes:
   - "This file is a placeholder container for rules-as-data."
@@ -22,6 +22,7 @@ modes:
     hard_rules:
       - "If concentration is specified and Parfumo has separate pages, match the correct one."
       - "If flanker/edition is clearly indicated, do not map to base."
+      - "If multiple Parfumo pages exist for different release years/versions of the same fragrance and no year is specified in the input, default to the most recent formulation/version; if not confidently determinable, return AMBIGUOUS."
       - "If evidence is vague and multiple candidates fit, return AMBIGUOUS."
 
   DESC_TO_FRAGRANTICA_URL:

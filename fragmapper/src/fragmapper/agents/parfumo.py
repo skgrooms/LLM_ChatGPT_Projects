@@ -3,8 +3,8 @@ ParfumoMapper Skill - Maps fragrance descriptions to Parfumo URLs.
 
 Skill: ParfumoMapper
 Mode: DESC_TO_PARFUMO_URL
-Version: 1.0.0
-Output-Contract: 1.0.0
+Version: 1.1.0
+Output-Contract: 1.1.0
 Last-Updated: 2026-01-10
 """
 
@@ -39,7 +39,7 @@ class ParfumoMapper(BaseAgent):
         - Keep the user's workflow fast: map and output
     """
 
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"
     MODE = Mode.DESC_TO_PARFUMO_URL
 
     def __init__(self, config: Optional[dict[str, Any]] = None):
