@@ -1,0 +1,33 @@
+version: "1.0"
+source: "Derived strictly from Parfumo mapping instructions provided in chat"
+notes:
+  - "This file is a placeholder container for rules-as-data."
+  - "No additional rule lists or normalization terms are defined beyond what is explicitly stated in the skill instructions."
+
+global:
+  principles:
+    - "Prefer correctness over guessing."
+    - "Output must be extremely simple and usable without further parsing."
+    - "Do not include explanations unless required by output contract."
+    - "Prefer returning AMBIGUOUS over asking questions."
+    - "Use web browsing when mapping (search and confirm target page)."
+
+modes:
+  DESC_TO_PARFUMO_URL:
+    skill: "ParfumoMapper"
+    output_contract:
+      single_match: "URL only"
+      ambiguous: "AMBIGUOUS then up to 5 URLs"
+      no_match: "NOT_FOUND"
+    hard_rules:
+      - "If concentration is specified and Parfumo has separate pages, match the correct one."
+      - "If flanker/edition is clearly indicated, do not map to base."
+      - "If evidence is vague and multiple candidates fit, return AMBIGUOUS."
+
+  DESC_TO_FRAGRANTICA_URL:
+    skill: "FragranticaMapper"
+    status: "placeholder"
+
+  PARFUMO_TO_FRAGRANTICA_URL:
+    skill: "CrosswalkMapper"
+    status: "placeholder"

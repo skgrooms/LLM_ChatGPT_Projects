@@ -1,0 +1,2 @@
+[console_scripts]
+fragmapper = fragmapper.cli:main

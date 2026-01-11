@@ -1,0 +1,132 @@
+Metadata-Version: 2.4
+Name: fragmapper
+Version: 1.0.0
+Summary: Agent system for mapping fragrance descriptions to canonical database URLs
+Author: FragServices
+License: Private
+Keywords: fragrance,mapping,parfumo,fragrantica,agent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: httpx>=0.25.0
+Requires-Dist: openai>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+
+# FragMapper
+
+**Version:** 1.0.0  
+**Last Updated:** 2026-01-10
+
+FragMapper is an agent system for mapping messy fragrance descriptions and listings to canonical fragrance database URLs (Parfumo, Fragrantica).
+
+## Architecture
+
+This project follows the **"Agent OS" model** to prevent context decay:
+
+- **Layer 1: Immutable Foundations** - Rules-as-data in YAML/JSON
+- **Layer 2: Narrow, Purpose-Built Agents** - Each agent has one responsibility
+- **Layer 3: Orchestrator** - Thin router that dispatches to skills
+
+## Project Structure
+
+```
+fragmapper/
+├── README.md
+├── CHANGELOG.md
+├── pyproject.toml
+├── requirements.txt
+├── src/
+│   └── fragmapper/
+│       ├── __init__.py
+│       ├── router.py           # Main router/dispatcher
+│       ├── agents/
+│       │   ├── __init__.py
+│       │   ├── base.py         # Base agent class
+│       │   ├── parfumo.py      # ParfumoMapper skill
+│       │   ├── fragrantica.py  # FragranticaMapper skill
+│       │   └── crosswalk.py    # CrosswalkMapper skill
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── schemas.py      # Pydantic output schemas
+│       └── utils/
+│           ├── __init__.py
+│           └── normalizer.py   # Text normalization utilities
+├── configs/
+│   └── fragmapper_rules.yml    # Rules-as-data
+├── docs/
+│   ├── FragMapper_Router.md
+│   ├── ParfumoMapper.md
+│   ├── FragranticaMapper.md
+│   └── CrosswalkMapper.md
+└── tests/
+    ├── __init__.py
+    ├── test_router.py
+    ├── test_parfumo.py
+    ├── cases.json              # Golden test set
+    └── expected/
+        └── DESC_TO_PARFUMO_URL.jsonl
+```
+
+## Supported Modes
+
+| MODE | Skill | Status |
+|------|-------|--------|
+| `DESC_TO_PARFUMO_URL` | ParfumoMapper | Active |
+| `DESC_TO_FRAGRANTICA_URL` | FragranticaMapper | Placeholder |
+| `PARFUMO_TO_FRAGRANTICA_URL` | CrosswalkMapper | Placeholder |
+
+## Output Contract
+
+All modes return one of:
+
+1. **Single confident match:** URL only on a single line
+2. **Ambiguous:** `AMBIGUOUS` followed by up to 5 candidate URLs
+3. **No match:** `NOT_FOUND`
+
+## Quick Start
+
+```bash
+# Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install in development mode
+pip install -e .
+
+# Run tests
+pytest tests/
+```
+
+## Core Principles
+
+1. **Prefer correctness over guessing**
+2. **Output must be simple and parseable**
+3. **Prefer returning AMBIGUOUS over asking questions**
+4. **Never let operational authority live in conversational memory**
+
+## Version Control
+
+- Use semantic versioning (MAJOR.MINOR.PATCH)
+- All changes must bump version numbers
+- Maintain CHANGELOG.md for all releases
+- Run regression tests before every release
+
+## License
+
+Private - FragServices

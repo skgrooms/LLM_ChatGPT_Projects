@@ -1,0 +1,88 @@
+Yep — I reviewed the zip. Overall it’s a strong starting structure (docs/specs + rules YAML + router/skills + tests). The main gaps are about single-source-of-truth alignment and a few repo hygiene / packaging issues.
+
+Below are the changes I’d make (ordered by impact).
+
+What’s already solid
+
+Clear separation of router vs skill modules (src/fragmapper/router.py, src/fragmapper/agents/*)
+
+Specs captured as docs (docs/FragMapper_Router.md, docs/ParfumoMapper.md, etc.)
+
+A rules-as-data file exists (configs/fragmapper_rules.yml)
+
+You’ve got a “golden cases” concept (tests/cases.json) and unit tests for output formatting
+
+This is the right skeleton for staying sane long-term.
+
+
+
+ISSUE 1) Broken CLI entrypoint
+
+pyproject.toml declares:
+
+[project.scripts]
+fragmapper = "fragmapper.cli:main"
+
+
+…but there is no src/fragmapper/cli.py.
+
+✅ Either:
+
+add cli.py, or
+
+remove the script entry until you need it
+
+(Leaving it as-is will confuse future-you the first time you try to run it.)
+
+Testing alignment (what you have vs what you need)
+ISSUE 2) Golden test set is aspirational but not enforceable yet
+
+tests/cases.json expects many MATCH results, but the actual ParfumoMapper implementation is explicitly a placeholder and will usually return NO_MATCH because brand/name extraction is not implemented.
+
+✅ Recommendation:
+Split tests into two categories:
+
+Contract tests (always true right now)
+
+to_simple_output() formatting
+
+router dispatch
+
+“no extra output” rules
+
+Golden behavior tests (manual/UI regression for now)
+
+keep tests/cases.json but treat it as “UI regression pack” until you actually implement search + scoring in code
+
+This avoids a false sense of “tests pass therefore mapping works”.
+
+UI-first alignment recommendation
+
+Since you said you’re using the ChatGPT UI first, the Python repo should mainly do:
+
+versioning of docs/YAML
+
+linting for contradictions
+
+regression case management
+
+packaging a “copy/paste bundle” of project files
+
+A very practical improvement:
+
+ISSUE 3) Add a “Project Bundle” folder that matches your ChatGPT Project file names
+
+Right now your authoritative files are in docs/ + configs/. Your ChatGPT Project likely wants:
+
+FragMapper_Router.md
+
+ParfumoMapper.md
+
+fragmapper_rules.yml
+
+(plus placeholders)
+
+✅ Recommendation:
+Create project_files/ (or dist/project_files/) containing exactly the files you paste into ChatGPT Projects, with the exact names/paths you expect there.
+
+That reduces human error when syncing.

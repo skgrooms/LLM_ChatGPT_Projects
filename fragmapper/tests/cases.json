@@ -1,0 +1,154 @@
+{
+  "version": "1.0.0",
+  "description": "UI Regression Test Set for FragMapper - Use with ChatGPT UI, NOT automated Python tests",
+  "last_updated": "2026-01-10",
+  "usage": "These cases are for MANUAL regression testing in the ChatGPT UI. The Python placeholder implementation will NOT pass these tests. Run these in the UI after each release.",
+  "categories": {
+    "easy_matches": "Clean, unambiguous inputs that should produce confident matches",
+    "concentration_edge_cases": "Inputs where EDT/EDP/Parfum distinction matters",
+    "flanker_edge_cases": "Inputs with flanker/edition terms that must be preserved",
+    "ambiguous_cases": "Inputs that should return AMBIGUOUS",
+    "no_match_cases": "Inputs that should return NOT_FOUND",
+    "exclusion_cases": "Inputs containing exclusion terms"
+  },
+  "test_cases": [
+    {
+      "id": "easy_001",
+      "category": "easy_matches",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Dior Sauvage Eau de Parfum 100ml",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Parfum",
+      "notes": "Clean brand + name + concentration"
+    },
+    {
+      "id": "easy_002",
+      "category": "easy_matches",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Chanel Bleu de Chanel EDT for men",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Chanel/Bleu_de_Chanel_Eau_de_Toilette",
+      "notes": "Clean brand + name + concentration + target"
+    },
+    {
+      "id": "easy_003",
+      "category": "easy_matches",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Creed Aventus 50ml spray",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Creed/Aventus",
+      "notes": "Clean brand + name, size is noise"
+    },
+    {
+      "id": "concentration_001",
+      "category": "concentration_edge_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Tom Ford Oud Wood EDP",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Tom_Ford/Oud_Wood_Eau_de_Parfum",
+      "notes": "Must match EDP version specifically"
+    },
+    {
+      "id": "concentration_002",
+      "category": "concentration_edge_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Versace Pour Homme EDT 200ml",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Versace/Pour_Homme_Eau_de_Toilette",
+      "notes": "EDT version required"
+    },
+    {
+      "id": "concentration_003",
+      "category": "concentration_edge_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "YSL La Nuit de L'Homme Parfum",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Yves_Saint_Laurent/La_Nuit_de_l_Homme_Le_Parfum",
+      "notes": "Parfum concentration, not EDT"
+    },
+    {
+      "id": "flanker_001",
+      "category": "flanker_edge_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Dior Sauvage Elixir",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Dior/Sauvage_Elixir",
+      "notes": "Elixir is a flanker, not base Sauvage"
+    },
+    {
+      "id": "flanker_002",
+      "category": "flanker_edge_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Chanel Allure Homme Sport Extreme",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Chanel/Allure_Homme_Sport_Eau_Extreme",
+      "notes": "Sport Extreme flanker, not base Sport"
+    },
+    {
+      "id": "flanker_003",
+      "category": "flanker_edge_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "JPG Le Male Le Parfum Intense",
+      "expected_status": "MATCH",
+      "expected_url": "https://www.parfumo.com/Perfumes/Jean_Paul_Gaultier/Le_Male_Le_Parfum_Intense",
+      "notes": "Le Parfum Intense flanker"
+    },
+    {
+      "id": "ambiguous_001",
+      "category": "ambiguous_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Dior Sauvage",
+      "expected_status": "AMBIGUOUS",
+      "expected_alternates": [
+        "https://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Toilette",
+        "https://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Parfum",
+        "https://www.parfumo.com/Perfumes/Dior/Sauvage_Parfum"
+      ],
+      "notes": "No concentration specified, multiple versions exist"
+    },
+    {
+      "id": "ambiguous_002",
+      "category": "ambiguous_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Acqua di Gio",
+      "expected_status": "AMBIGUOUS",
+      "expected_alternates": [
+        "https://www.parfumo.com/Perfumes/Giorgio_Armani/Acqua_di_Gio",
+        "https://www.parfumo.com/Perfumes/Giorgio_Armani/Acqua_di_Gio_Profumo"
+      ],
+      "notes": "Brand ambiguous, multiple versions"
+    },
+    {
+      "id": "no_match_001",
+      "category": "no_match_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "XYZ Totally Fake Fragrance That Does Not Exist 2025",
+      "expected_status": "NO_MATCH",
+      "notes": "Non-existent fragrance"
+    },
+    {
+      "id": "exclusion_001",
+      "category": "exclusion_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Dior Sauvage EDP 5ml decant",
+      "expected_status": "EXCLUDED",
+      "notes": "Contains 'decant' exclusion term"
+    },
+    {
+      "id": "exclusion_002",
+      "category": "exclusion_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Chanel Bleu sample vial",
+      "expected_status": "EXCLUDED",
+      "notes": "Contains 'sample' exclusion term"
+    },
+    {
+      "id": "exclusion_003",
+      "category": "exclusion_cases",
+      "mode": "DESC_TO_PARFUMO_URL",
+      "input": "Tom Ford Oud Wood empty bottle box only",
+      "expected_status": "EXCLUDED",
+      "notes": "Contains 'empty bottle' and 'box only' exclusion terms"
+    }
+  ]
+}

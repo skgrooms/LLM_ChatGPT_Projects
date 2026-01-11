@@ -1,0 +1,1415 @@
+Short answer: **yes, that is a real risk** when using long-lived ChatGPT Projects/Agents for business operations—but it’s **manageable** with the right architecture. What you’re describing is less “prompt engineering” and more **systems design for cognitive reliability**.
+
+Below is a practical, long-term framework that avoids context decay while still letting you scale agents across real business workflows.
+
+---
+
+## 1. Why Context Decay Is a Legitimate Risk
+
+Context decay happens when **too many responsibilities, assumptions, and historical decisions** accumulate in a single agent or project. The failure modes tend to look like:
+
+### A. Silent Drift
+
+The agent still “works,” but:
+
+* Core rules are inconsistently applied
+* Edge cases creep in (wrong assumptions, forgotten constraints)
+* Early design principles are overridden by later conversations
+
+### B. Priority Confusion
+
+The model optimizes for:
+
+* Recent instructions over foundational ones
+* Convenience over correctness
+* Fluency over rigor
+
+### C. Overgeneralization
+
+The agent starts hallucinating “reasonable” answers instead of enforcing:
+
+* Schema
+* Business rules
+* Taxonomies
+* Hard exclusions
+
+**Important:** This is not because the model “forgets” randomly—it’s because **you’re overloading a single cognitive surface**.
+
+---
+
+## 2. The Core Principle: Separate *Authority* from *Conversation*
+
+The single biggest mitigation strategy is this:
+
+> **Never let operational authority live in conversational memory.**
+
+### What should NOT live in chat context
+
+* Business rules
+* Canonical schemas
+* Slug taxonomies
+* Validation logic
+* Monetization rules
+* Compliance constraints
+
+### What chat context IS good for
+
+* Task execution
+* Reasoning over *inputs*
+* One-off synthesis
+* Decision support
+* Natural-language interfaces to systems
+
+**Think of chat as the UI, not the database.**
+
+---
+
+## 3. The “Agent OS” Model (Recommended)
+
+Instead of one broad agent, use **layered agents with fixed roles**.
+
+### Layer 1: Immutable Foundations (External)
+
+These live **outside ChatGPT**:
+
+* JSON/YAML schemas
+* SQL tables
+* Versioned markdown specs
+* Rule engines
+* Prompt templates stored in files/repos
+
+Example:
+
+```yaml
+matching_rules:
+  exclude_terms:
+    - tester
+    - box only
+    - empty bottle
+  concentration_priority:
+    parfum > edp > edt > edc
+```
+
+ChatGPT **reads** these. It does not redefine them.
+
+---
+
+### Layer 2: Narrow, Purpose-Built Agents
+
+Each agent has:
+
+* One responsibility
+* One output format
+* One validation surface
+
+Examples:
+
+* `ProductMatcherAgent`
+* `PriceNormalizerAgent`
+* `ContentSummarizerAgent`
+* `AffiliateComplianceAgent`
+
+If an agent can do more than one of these, it’s already too broad.
+
+---
+
+### Layer 3: Orchestrator (Thin)
+
+The orchestrator:
+
+* Passes inputs
+* Chooses which agent runs
+* Never reasons deeply itself
+
+Think: **dispatcher, not thinker**.
+
+---
+
+## 4. Projects vs Agents: How to Use Them Safely
+
+### ChatGPT Projects (Best Use)
+
+Use Projects for:
+
+* **Shared reference docs**
+* **Read-only specs**
+* **System prompts that don’t change weekly**
+
+Avoid using Projects as:
+
+* Long-term memory dumps
+* Brainstorm scratchpads
+* Decision logs
+
+If a Project grows beyond:
+
+* 5–7 core documents
+* or 10k–15k tokens of “authority”
+
+…it’s already drifting.
+
+---
+
+### Agents (Best Use)
+
+Agents are safest when:
+
+* Stateless or lightly stateful
+* Resettable
+* Deterministic in output
+
+**Red flag:**
+“If I asked this agent the same task 6 months from now, would I trust the output without rereading everything?”
+
+If the answer is “maybe,” split it.
+
+---
+
+## 5. Versioning Is Non-Negotiable
+
+Every operational agent should declare:
+
+```text
+Agent: ProductMatcherAgent
+Version: 1.3.2
+Schema: matcher_output_v3
+Ruleset: matching_rules_2026-01
+```
+
+Why this matters:
+
+* You can detect regressions
+* You can compare outputs across versions
+* You can roll back logic without rewriting prompts
+
+This is how you prevent **foundational decay**.
+
+---
+
+## 6. Testing & Regression (Most People Skip This)
+
+You should maintain:
+
+* A **golden test set**
+* Expected outputs
+* Periodic re-runs
+
+Example:
+
+* 100 known tricky SKUs
+* Expected slug matches
+* Known exclusions
+
+Run them:
+
+* Monthly
+* After model upgrades
+* After prompt/schema changes
+
+If accuracy drops → **something drifted**.
+
+---
+
+## 7. Practical Heuristics to Know When Context Is “Too Broad”
+
+You’re in danger if:
+
+* You say: *“The agent knows this already”*
+* You can’t explain why it answered something a certain way
+* You rely on “remember when we decided…”
+* You stop enforcing schemas strictly
+* Outputs become fluent but slightly wrong
+
+Fluency ≠ correctness.
+
+---
+
+## 8. Long-Term Mental Model (This Is Key)
+
+Think of ChatGPT as:
+
+> **A stateless, extremely capable reasoning engine that should be plugged into stable systems—not allowed to become the system itself.**
+
+The more your business depends on:
+
+* Precision
+* Repeatability
+* Trust
+* Attribution
+* Monetization
+
+…the more dangerous it is to let “context” replace structure.
+
+---
+
+## 9. If You Want, Next Steps I Can Help With
+
+If you want to go deeper, I can:
+
+* Design a **reference Agent Architecture** for your ops
+* Create a **context budget policy**
+* Define **reset triggers**
+* Build a **rules-as-data** pattern
+* Help you split an existing over-broad agent safely
+
+Just tell me where you want to start.
+
+------------------------------------------------------------------------
+
+Got it. You’re in the sweet spot where **“MODE-based mega-agent”** is convenient, but it’s also the easiest way to slowly accumulate contradictions and edge-case hacks.
+
+You *can* keep MODE without becoming unmaintainably granular—by separating **routing, rules, and execution**.
+
+## A maintainable pattern: Router + Skill Modules + Rules-as-Data
+
+### 1) Keep ONE Project: `FragMapper`
+
+But inside it, treat things as *modules*, not one blob of instructions:
+
+* **Router (thin):** decides which “skill” runs based on MODE
+* **Skill module (narrow):** ParfumoMapper, FragranticaMapper, CrosswalkMapper
+* **Rules-as-data (stable):** shared normalization + exclusions + parsing rules
+
+This gives you:
+
+* Maintainability (one project, a few files)
+* No context bloat (skills stay small)
+* Clear boundaries (less drift)
+
+---
+
+## How MODE should work (without becoming a “god prompt”)
+
+### ✅ Good MODE design
+
+MODE selects:
+
+* **Input schema**
+* **Output schema**
+* **Allowed tools/heuristics**
+* **Which ruleset to apply**
+
+### ❌ Bad MODE design
+
+MODE selects:
+
+* totally different logic styles (“sometimes fuzzy, sometimes strict”)
+* contradictory priorities (“ignore packaging, but also prioritize packaging”)
+* free-form output formats
+
+If you keep MODE, make it **a strict switchboard**, not a free-form “personality.”
+
+---
+
+## Rules-as-data: the minimum viable version that actually helps
+
+Create a single “Rules” document (or file) that never contains prose like “be careful” — only *explicit lists and priorities*.
+
+### Example: `fragmapper_rules.yml` (conceptually)
+
+* **Normalization**
+
+  * common synonyms (edp/eau de parfum, parfum/extrait)
+  * token cleanup (remove “spray”, “authentic”, “100%”, emojis, etc.)
+* **Exclusions**
+
+  * “decant”, “sample”, “empty bottle”, “box only”
+* **Pack/size parsing**
+
+  * 100 ml, 3.4 oz, “set”, “2x”
+* **Match priorities**
+
+  1. exact brand + fragrance name (+ year if present)
+  2. brand + name + concentration
+  3. brand + name (ignore size/packaging)
+* **Ambiguity policy**
+
+  * when to return multiple candidates
+  * when to refuse / say “insufficient info”
+
+This lets you update behavior by changing lists, not rewriting prompts.
+
+---
+
+## Skill Modules: keep them few, but strict
+
+You don’t want 30 agents. You want **3–5 skills** with clean contracts.
+
+### Skill A — `MapListingToParfumo`
+
+**Input:** raw listing text (title + description)
+**Output:** parfumo URL + confidence + (optional) 1–3 alternates
+**Rules used:** normalization + exclusions + parfumo-specific mapping rules
+
+### Skill B — `MapListingToFragrantica`
+
+Same, but with Fragrantica URL conventions and naming patterns.
+
+### Skill C — `CrosswalkParfumoToFragrantica`
+
+**Input:** Parfumo URL or Parfumo brand/name
+**Output:** Fragrantica URL + confidence
+**Rules used:** crosswalk rules (synonym tables matter more here)
+
+That’s enough separation to prevent drift, without becoming annoying.
+
+---
+
+## Output schemas: this is what prevents “decay”
+
+If you’re not saving results, the main thing you need is **deterministic outputs**.
+
+Use one common envelope schema:
+
+```json
+{
+  "mode": "LISTING_TO_PARFUMO",
+  "input_summary": { "brand": "", "name": "", "concentration": "", "size_ml": null },
+  "decision": {
+    "status": "MATCH|AMBIGUOUS|NO_MATCH|EXCLUDED",
+    "primary_url": "",
+    "confidence": 0.0,
+    "alternates": [{"url":"","confidence":0.0,"note":""}]
+  },
+  "notes": ["short, structured reasons only"],
+  "debug": {
+    "excluded_terms_found": [],
+    "normalized_title": ""
+  }
+}
+```
+
+Why this helps long-term:
+
+* Every mode returns the same *shape*
+* You can later regression-test by comparing JSON
+* The model can’t “wander” stylistically
+
+---
+
+## How to avoid too much granularity while still splitting safely
+
+Here’s the practical rule:
+
+> Split by **different sources or different tasks**, not by micro-heuristics.
+
+So:
+
+* ✅ “Parfumo mapping” vs “Fragrantica mapping” vs “Crosswalk”
+* ❌ “EDP parser agent” “Size parser agent” “Brand detector agent” (too granular)
+
+Normalization/parsing should be **rules-as-data + one shared preprocessor step**, not its own agent.
+
+---
+
+## Recommended design change for your current setup
+
+If your current instructions are “one prompt with MODE branches,” evolve it to:
+
+1. **Global Preprocessor (shared)**
+
+* normalize text
+* detect exclusions
+* extract candidates (brand/name/concentration/size)
+
+2. **Router**
+
+* selects skill based on MODE
+* injects only the relevant rules + schema
+
+3. **Skill execution**
+
+* mapping logic for that target
+
+You keep a single “FragMapper” project, but your instruction set becomes **composable**.
+
+---
+
+## “Not saving results” doesn’t mean “no memory concerns”
+
+Even stateless usage decays if:
+
+* you keep editing the prompt directly
+* you add exceptions ad-hoc (“except when…”)
+* you don’t version rulesets
+
+So: version the rules file (even just a date tag), and keep the skills stable.
+
+---
+
+## If you want, paste your current MODE list + one sample instruction block
+
+And I’ll rewrite it into:
+
+* a **Router spec**
+* 2–3 **Skill specs**
+* a **Rules-as-data skeleton**
+* and a strict **JSON output contract**
+
+You’ll end up with something that’s *less fragile*, still simple to maintain, and doesn’t explode into 20 agents.
+
+------------------------------------------------------------------------
+
+Absolutely — here are the **five artifacts** in the exact structure you requested, built **strictly from the instructions you pasted** (no added rule lists, no inferred exclusions/normalization). The YAML is a **minimal extensible shell** that contains *only* what your pasted instructions explicitly state at a high level.
+
+---
+
+## FragMapper_Router.md
+
+```text
+# FragMapper Router
+
+## Purpose
+You route the user request to exactly one skill module based on MODE.
+
+## Non-negotiables
+- Execute only the selected skill module.
+- Do not mix instructions from different skills.
+- Enforce the output contract of the selected skill.
+- Do not add any output beyond what the selected skill’s output contract allows.
+
+## Supported MODES
+- MODE: DESC_TO_PARFUMO_URL
+  - Skill: ParfumoMapper
+
+- MODE: DESC_TO_FRAGRANTICA_URL
+  - Skill: FragranticaMapper (placeholder)
+
+- MODE: PARFUMO_TO_FRAGRANTICA_URL
+  - Skill: CrosswalkMapper (placeholder)
+
+## If MODE is missing or unsupported
+Output exactly:
+NOT_FOUND
+```
+
+---
+
+## ParfumoMapper.md (behavior preserved)
+
+```text
+# ParfumoMapper
+
+## Purpose
+You are FragMapper, an agent that maps messy fragrance descriptions and listings to a single canonical Parfumo.com fragrance page.
+
+Your current mission: given a user-provided fragrance description, output the Parfumo fragrance URL that corresponds to it.
+
+## Non-negotiables
+- Output must be extremely simple and usable without further parsing.
+- Do not include explanations in the final output unless the output contract requires it (e.g., ambiguous/no match).
+- Prefer correctness over guessing.
+- Use web browsing when mapping (search Parfumo and confirm the target page).
+- Do not ask clarifying questions unless absolutely necessary to avoid an incorrect mapping.
+- Prefer returning AMBIGUOUS over asking questions.
+- Keep the user’s workflow fast: map and output.
+
+## MODE
+MODE: DESC_TO_PARFUMO_URL
+
+## Input
+Free-text fragrance description (may include brand/name, notes, bottle details, concentration, year, “for men/women”, batch info, etc.).
+
+## Output Contract (DESC_TO_PARFUMO_URL)
+
+You must output one of the following:
+
+### Single confident match
+Output ONLY the URL on a single line
+Example:
+https://www.parfumo.com/Perfumes/Chanel/Bleu_de_Chanel_Eau_de_Parfum
+
+### Ambiguous (multiple plausible matches)
+First line: AMBIGUOUS
+Then output up to 5 candidate URLs, one per line, best match first
+Example:
+AMBIGUOUS
+https://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Toilette
+https://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Parfum
+
+### No match
+Output exactly: NOT_FOUND
+
+Do not output anything else. No labels, no bullets, no commentary.
+
+## Mapping Workflow (DESC_TO_PARFUMO_URL)
+
+### Step 1 — Normalize & Extract Clues
+From the description, extract as many of these as possible:
+- Brand / house
+- Fragrance name (core name)
+- Flanker / edition terms (e.g., “Intense”, “Absolu”, “Elixir”, “Parfum”, “Sport”, “Nuit”, “L’Homme”, “Pour Homme”, “Pour Femme”, “Cologne”, “Extreme”, “Privée”, “Reserve”, “Limited Edition”, etc.)
+- Concentration (EDT/EDP/Parfum/Extrait/Cologne)
+- Release year (if present)
+- Target (men/women/unisex)
+- Key notes (especially distinctive ones)
+- Bottle cues (color, shape, cap, label text) if described
+- Retailer/listing noise (sizes, “tester”, “new in box”, bundle) — treat as non-canonical
+
+Create a “best guess canonical string” like:
+{Brand} {Name} {Flanker/Concentration}
+
+### Step 2 — Search Strategy (Web)
+Use web search to find Parfumo candidates:
+
+Query patterns (try multiple):
+- site:parfumo.com Perfumes {Brand} {Name}
+- site:parfumo.com {Brand} "{Name}"
+
+Add concentration or flanker keywords if present.
+
+If the name is short/ambiguous, add 1–3 distinctive notes or “pour homme / pour femme”.
+
+Open likely results and confirm they are fragrance pages (not forums, not reviews, not brand overview pages).
+
+### Step 3 — Candidate Scoring (Choose the best page)
+Prefer the candidate that matches the most of:
+- Exact/near-exact brand + fragrance name
+- Correct flanker/edition
+- Correct concentration (EDT vs EDP vs Parfum matters a lot)
+- Notes profile and target audience (if mentioned)
+- Release year (if mentioned)
+
+Hard rules
+- If the description includes a concentration (EDT/EDP/Parfum) and Parfumo has separate pages, you must match the correct one.
+- If the description clearly indicates a flanker (e.g., “Intense”, “Sport”, “Elixir”), do not map to the base.
+- If the only evidence is vague and multiple candidates fit, return AMBIGUOUS.
+
+### Step 4 — Confidence Threshold
+- Output a single URL only if you are strongly confident it is the correct canonical page.
+- If 2+ pages remain plausible, output AMBIGUOUS + the best candidates.
+- If nothing plausible appears after reasonable searching, output NOT_FOUND.
+
+## Edge Cases & Handling Rules
+
+### Common tricky cases
+- Same name across brands → brand must match.
+- Base vs flanker → treat as different fragrances; don’t collapse.
+- EDT vs EDP vs Parfum → treat as different when Parfumo separates them.
+- Reformulation / batches → Parfumo usually maps to a single page; ignore batch unless it points to a known separate edition.
+- “Cologne” as a flanker vs concentration wording → interpret using brand context and Parfumo structure.
+- Designer “Pour Homme” vs “Homme” vs “Man” → normalize but preserve meaning.
+- Typos → attempt fuzzy matching by searching variant spellings.
+
+## What not to do
+- Don’t output non-Parfumo URLs.
+- Don’t output a Parfumo search results URL if a fragrance page exists.
+- Don’t add commentary like “I think it’s this one”.
+```
+
+---
+
+## fragmapper_rules.yml (minimal + extensible, strictly derived)
+
+```yaml
+version: "1.0"
+source: "Derived strictly from Parfumo mapping instructions provided in chat"
+notes:
+  - "This file is a placeholder container for rules-as-data."
+  - "No additional rule lists or normalization terms are defined beyond what is explicitly stated in the skill instructions."
+
+global:
+  principles:
+    - "Prefer correctness over guessing."
+    - "Output must be extremely simple and usable without further parsing."
+    - "Do not include explanations unless required by output contract."
+    - "Prefer returning AMBIGUOUS over asking questions."
+    - "Use web browsing when mapping (search and confirm target page)."
+
+modes:
+  DESC_TO_PARFUMO_URL:
+    skill: "ParfumoMapper"
+    output_contract:
+      single_match: "URL only"
+      ambiguous: "AMBIGUOUS then up to 5 URLs"
+      no_match: "NOT_FOUND"
+    hard_rules:
+      - "If concentration is specified and Parfumo has separate pages, match the correct one."
+      - "If flanker/edition is clearly indicated, do not map to base."
+      - "If evidence is vague and multiple candidates fit, return AMBIGUOUS."
+
+  DESC_TO_FRAGRANTICA_URL:
+    skill: "FragranticaMapper"
+    status: "placeholder"
+
+  PARFUMO_TO_FRAGRANTICA_URL:
+    skill: "CrosswalkMapper"
+    status: "placeholder"
+```
+
+---
+
+## FragranticaMapper.md (placeholder)
+
+```text
+# FragranticaMapper (Placeholder)
+
+## MODE
+MODE: DESC_TO_FRAGRANTICA_URL
+
+## Purpose
+Placeholder skill module for mapping a user-provided fragrance description to a single canonical Fragrantica.com fragrance page.
+
+## Status
+Not implemented yet. No mapping workflow is defined here.
+
+## Output Contract
+Must mirror the ParfumoMapper output contract style:
+- Single confident match: output ONLY the URL on a single line
+- Ambiguous: first line AMBIGUOUS, then up to 5 candidate URLs, one per line
+- No match: output exactly NOT_FOUND
+
+Do not output anything else.
+```
+
+---
+
+## CrosswalkMapper.md (placeholder)
+
+```text
+# CrosswalkMapper (Placeholder)
+
+## MODE
+MODE: PARFUMO_TO_FRAGRANTICA_URL
+
+## Purpose
+Placeholder skill module for mapping a Parfumo fragrance page (or Parfumo-identified fragrance) to the equivalent canonical Fragrantica.com fragrance page.
+
+## Status
+Not implemented yet. No mapping workflow is defined here.
+
+## Output Contract
+Must mirror the ParfumoMapper output contract style:
+- Single confident match: output ONLY the URL on a single line
+- Ambiguous: first line AMBIGUOUS, then up to 5 candidate URLs, one per line
+- No match: output exactly NOT_FOUND
+
+Do not output anything else.
+```
+
+---
+
+If you want, next I can **tighten drift resistance** *without changing behavior* by adding:
+
+* explicit “Allowed Outputs” line to Router and each module
+* a “Max tokens / stop after X candidate pages” constraint for web browsing loops
+
+But I’ll only add those if you explicitly request them, since they’re not in your original text.
+
+--------------------------------------------------------------------
+
+Short answer: **yes — you should update the existing project instructions**, but **do not delete them**. They should be reduced to a **thin bootstrap that explicitly defers authority to the files**.
+
+This is a *very important step* for preventing context decay.
+
+Below is the **clean, low-risk way to do it**.
+
+---
+
+## The Goal
+
+You want **one and only one source of truth** for behavior:
+
+* ✅ **Project files** → authoritative logic
+* ❌ **Project instructions** → not duplicating logic
+
+If you leave the full instructions in both places, you create **dual authority**, which *will* drift.
+
+---
+
+## What NOT to Do ❌
+
+* Don’t leave the full FragMapper logic in project instructions “just in case”
+* Don’t partially edit the old instructions
+* Don’t rely on “it probably uses the files anyway”
+
+That’s how contradictions creep in.
+
+---
+
+## What TO Do ✅ (Recommended Pattern)
+
+### Step 1: Replace project instructions with a **bootstrap directive**
+
+Your **Project Instructions** should be very short and explicit.
+
+### ✅ Recommended Project Instructions (copy/paste)
+
+```text
+You are FragMapper.
+
+All operational logic, workflows, rules, and output contracts are defined in the project files:
+- FragMapper_Router.md
+- ParfumoMapper.md
+- FragranticaMapper.md
+- CrosswalkMapper.md
+- fragmapper_rules.yml
+
+Authoritative rule:
+- You MUST follow the project files exactly.
+- If there is any conflict between chat messages and project files, the project files take precedence.
+- Do NOT invent, infer, or extend rules beyond what is written in the files.
+
+Execution rules:
+- Select the correct skill strictly via MODE using FragMapper_Router.md.
+- Execute only the selected skill.
+- Enforce the output contract defined in that skill.
+- Do not add commentary, explanations, or formatting beyond the defined output.
+
+If required information is missing or MODE is invalid, follow the router’s NOT_FOUND behavior.
+```
+
+This does **three critical things**:
+
+1. Establishes **single authority**
+2. Prevents silent instruction blending
+3. Makes future maintenance safe
+
+---
+
+## Step 2: Archive (don’t delete) the old instructions
+
+If you can:
+
+* move the original long instructions to an **Archived / Legacy** file
+  e.g. `ParfumoMapper_legacy_2026-01.md`
+
+Why?
+
+* You retain history
+* You can diff behavior later
+* You avoid accidental resurrection of old logic
+
+---
+
+## Step 3: Verify with a “known test”
+
+After updating instructions:
+
+Run 2–3 known inputs that you *know* the correct outputs for.
+
+If output matches prior behavior:
+
+* ✅ migration successful
+* ❌ if not, something is still being pulled from chat memory
+
+---
+
+## Common Failure Modes (watch for these)
+
+### 🚨 1. “Helpful explanations” reappear
+
+Means:
+
+* The bootstrap instructions aren’t strict enough
+* Or duplicate rules still exist
+
+Fix:
+
+* Add “Do not explain unless output contract requires it” to bootstrap
+
+---
+
+### 🚨 2. Agent mixes Parfumo + Fragrantica logic
+
+Means:
+
+* Router authority isn’t enforced strongly enough
+
+Fix:
+
+* Add: *“Never mix skills in a single execution”* (already included above)
+
+---
+
+### 🚨 3. Behavior changes after you edit unrelated files
+
+Means:
+
+* Multiple authoritative sources still exist
+
+Fix:
+
+* Ensure project instructions contain **zero domain logic**
+
+---
+
+## Mental Model (Important)
+
+Think of your Project like this:
+
+> **Project Instructions = BIOS**
+> **Project Files = Operating System**
+> **Chat Input = Runtime data**
+
+The BIOS should be tiny and boring.
+
+---
+
+## When should you EVER update project instructions again?
+
+Only when:
+
+* You add a new MODE
+* You change precedence rules
+* You add a new skill file
+
+Never for:
+
+* Mapping heuristics
+* Edge cases
+* Output tweaks
+
+Those belong **only in files**.
+
+-----------------------------------------------------------------
+
+For FragMapper-style agents, treat version control like you would for **business rules**: you want **auditability**, **rollbacks**, and **regression checks** without adding overhead.
+
+Here are a few solid options, from “lightweight” to “proper engineering,” plus a concrete scheme you can copy.
+
+---
+
+## Option A (recommended): Git repo for the Project files
+
+### Why it’s the best default
+
+* Easy diff/rollback
+* Tag releases
+* Track who changed what and why
+* Works great with `.md` + `.yml`
+
+### Minimal structure
+
+```
+fragmapper/
+  README.md
+  FragMapper_Router.md
+  ParfumoMapper.md
+  FragranticaMapper.md
+  CrosswalkMapper.md
+  fragmapper_rules.yml
+  tests/
+    cases.json
+    expected/
+      DESC_TO_PARFUMO_URL.jsonl
+  CHANGELOG.md
+```
+
+### Workflow (simple)
+
+* Make changes in a branch
+* Update version fields (see below)
+* Run regression tests (even manual at first)
+* Merge to main
+* Tag release (e.g., `v1.2.0`)
+
+---
+
+## Option B: GitHub Gist / private repo (ultra lightweight)
+
+If you don’t want “a whole repo”:
+
+* Use a **private GitHub repo** with just 5–10 files
+* Or a single repo for all your agents (`agents/fragmapper/...`)
+
+This is enough for 90% of cases.
+
+---
+
+## Option C: “Manual versioning” inside the files (works even without Git)
+
+If you absolutely don’t want Git yet:
+
+* Put a version header in each file
+* Maintain a changelog section
+
+This is still useful, but you lose true diffs/rollback reliability.
+
+---
+
+## The versioning scheme I recommend
+
+### 1) Use semantic versioning at the “agent system” level
+
+**MAJOR.MINOR.PATCH**
+
+* **MAJOR**: breaking change to outputs/contracts or meaning
+* **MINOR**: improved matching logic, new mode, new rules that don’t break outputs
+* **PATCH**: wording/clarity, bug fixes that shouldn’t change behavior materially
+
+Example: `FragMapper v1.4.2`
+
+### 2) Separate versions for:
+
+* **Router spec**
+* **Each skill**
+* **Rules file**
+
+Why? You’ll change them at different rates.
+
+---
+
+## What to add to your files (copy/paste pattern)
+
+### In `FragMapper_Router.md`
+
+```text
+Version: 1.0.0
+Last-Updated: 2026-01-10
+```
+
+### In `ParfumoMapper.md`
+
+```text
+Skill: ParfumoMapper
+Mode: DESC_TO_PARFUMO_URL
+Version: 1.0.0
+Output-Contract: 1.0.0
+Last-Updated: 2026-01-10
+```
+
+### In `fragmapper_rules.yml`
+
+```yaml
+version: "2026-01-10.1"   # date-based is fine here
+compatibility:
+  router: ">=1.0.0"
+  skills:
+    ParfumoMapper: ">=1.0.0"
+```
+
+This makes it obvious when something changed, and lets you enforce compatibility later.
+
+---
+
+## The most important part: regression tests (even if you start small)
+
+### Minimum viable regression set
+
+Create `tests/cases.json` with ~30 cases:
+
+* 10 easy matches
+* 10 concentration/flanker edge cases
+* 10 ambiguous/no-match cases
+
+Store expected outputs exactly:
+
+* either URL
+* or `AMBIGUOUS + urls`
+* or `NOT_FOUND`
+
+**Why this matters:** you’ll catch “logic drift” immediately.
+
+### How to run regressions (cheap)
+
+* Monthly
+* After any file change
+* After any model/agent setting change
+
+Even manual is fine initially:
+
+* paste test inputs
+* compare exact output strings
+
+If you want to automate later, it’s straightforward.
+
+---
+
+## Release process that stays maintainable
+
+### 1) Make change
+
+Edit only the relevant module file(s).
+
+### 2) Bump version
+
+* If output contract changes → bump MAJOR
+* If mapping behavior changes → bump MINOR
+* If just clarification → bump PATCH
+
+### 3) Update changelog
+
+`CHANGELOG.md`:
+
+* what changed
+* why
+* expected impact
+
+### 4) Run regressions
+
+Confirm nothing unintended broke.
+
+### 5) Tag release
+
+`v1.1.0`
+
+---
+
+## If you want “business friendly” versioning
+
+Sometimes semantic versions feel too software-y.
+
+Alternative:
+
+* **Date-stamped releases**: `2026.01.10-r1`
+* Still keep a “breaking change” indicator in notes
+
+This works fine if you mostly care about auditability.
+
+---
+
+## Recommended starting point for you (lowest friction)
+
+1. Put the 5 files in a **private GitHub repo**
+2. Add version headers
+3. Add a `tests/cases.json` with 20–30 cases
+4. Maintain a basic `CHANGELOG.md`
+
+That’s it. You’ll get 80% of the benefit with minimal overhead.
+
+---
+
+If you tell me where you’ll store it (GitHub, GitLab, local only), I can give you an exact folder template + a starter `tests/cases.json` format that matches your output contract precisely.
+
+👍 That’s a good call—and honestly the **right order of operations** for what you’re building.
+
+Using the **UI first** lets you harden behavior, contracts, and edge cases **before** you freeze anything into code or an API.
+
+Here’s how I’d recommend proceeding *while staying UI-only* and keeping everything future-safe.
+
+---
+
+## 1. Treat the UI Project as a “runtime sandbox”
+
+Right now, think of your ChatGPT Project as:
+
+> **A controlled execution environment**, not the source of truth.
+
+* **GitHub** = authoritative specs + version history
+* **ChatGPT Project** = runtime copy of a *specific tagged version*
+
+This mental model prevents accidental drift.
+
+---
+
+## 2. Lock down the Project Instructions (do this once)
+
+You already moved logic into files. Now keep the **Project Instructions extremely thin** and never expand them again unless you add a MODE.
+
+**Final form (recommended):**
+
+```text
+You are FragMapper.
+
+All operational logic, workflows, and output contracts are defined in the project files.
+Those files are the sole source of truth.
+
+You must:
+- Select the correct skill strictly via MODE using FragMapper_Router.md
+- Execute only the selected skill
+- Enforce the output contract exactly
+- Output nothing beyond what the contract allows
+
+Do not infer, invent, or extend rules beyond what is written in the files.
+If MODE is invalid or required information is missing, follow the router’s NOT_FOUND behavior.
+```
+
+Once this is set, **don’t touch it**.
+
+---
+
+## 3. How to work day-to-day in the UI (without causing drift)
+
+### A. Always specify MODE explicitly
+
+Even if there’s only one active mode:
+
+```text
+MODE: DESC_TO_PARFUMO_URL
+INPUT:
+Dior Sauvage EDP 100ml
+```
+
+This keeps the router behavior exercised from day one.
+
+---
+
+### B. Never “quick-fix” behavior in chat
+
+If something is off:
+
+* ❌ Don’t say “next time do X”
+* ❌ Don’t add clarifying instructions in the chat
+
+Instead:
+
+1. Note the failure
+2. Update the **GitHub file**
+3. Paste the updated file into the Project
+4. Bump the version
+
+This is the single biggest discipline that prevents decay.
+
+---
+
+## 4. Use a manual regression ritual (5 minutes, high payoff)
+
+Keep your `tests/cases.jsonl` locally.
+
+Every time you change **any** file:
+
+1. Run 5–10 known inputs in the UI
+2. Compare outputs character-for-character
+3. If a known case changed unexpectedly → rollback
+
+This is enough to catch 95% of regressions early.
+
+---
+
+## 5. Visual version sanity check (important in UI)
+
+At the **top of each file**, keep:
+
+```text
+Version: 1.0.0
+```
+
+Before running anything in the UI:
+
+* glance at the version numbers
+* confirm they match your intended GitHub tag
+
+This avoids the “which version is this Project using?” problem.
+
+---
+
+## 6. When you should consider API later (not now)
+
+You’re ready for API **only when**:
+
+* Output contract hasn’t changed in weeks
+* Ambiguity behavior is stable
+* You trust it unattended
+
+Until then, the UI is faster and safer.
+
+---
+
+## 7. One small optional improvement (UI-only, zero risk)
+
+Add this single line to the **top of every user input** while testing:
+
+```text
+STRICT MODE: Follow project files only.
+```
+
+This is a temporary guardrail during early iteration. You can drop it later.
+
+---
+
+## Final reassurance
+
+You’re doing this *exactly right*:
+
+* you identified context decay early
+* you separated authority from execution
+* you chose UI first, code later
+
+That’s how these systems stay reliable long-term.
+
+When you’re ready to:
+
+* add FragranticaMapper
+* formalize exclusions
+* or wire this into an API
+
+…you’ll be doing it from a **stable, versioned foundation**, not a tangled prompt history.
+
+If you want, next I can help you design:
+
+* a **checklist for “safe file edits”**
+* a **release ritual you can do in under 3 minutes**
+* or a **decision log template** so you remember *why* a rule exists later
+
+-------------------------------------------------------------
+
+Great question. A **release ritual** is exactly what prevents “small harmless tweaks” from quietly breaking FragMapper six weeks later.
+
+Below is a **concrete, copy-pasteable ritual** you can actually follow in under **3 minutes** once you’ve done it a few times.
+
+---
+
+# FragMapper Release Ritual (UI-First)
+
+**Purpose:**
+Safely move from *“I tweaked something”* → *“This version is stable and auditable”*
+**Target time:** 2–5 minutes
+**Applies to:** any change to `.md` or `.yml` files
+
+---
+
+## 0) Pre-flight check (10 seconds)
+
+Ask yourself **one question**:
+
+> Did I change *behavior* or just *wording*?
+
+* Wording/clarity only → PATCH
+* Matching logic / thresholds → MINOR
+* Output contract change → MAJOR
+
+If you’re unsure, assume **MINOR**.
+
+---
+
+## 1) Update version headers (30 seconds)
+
+### In every modified file
+
+Bump the version at the top.
+
+Example:
+
+```text
+Version: 1.1.0
+Last-Updated: 2026-01-10
+```
+
+For YAML:
+
+```yaml
+version: "1.1.0"
+last_updated: "2026-01-10"
+```
+
+👉 **Rule:** Never change behavior without changing a version number.
+
+---
+
+## 2) Update CHANGELOG.md (30–45 seconds)
+
+Append a short entry.
+
+```md
+## v1.1.0 — 2026-01-10
+### Changed
+- Tightened ambiguity handling for listings missing concentration
+- Clarified flanker vs base matching rules
+
+### Impact
+- No output contract changes
+- Possible increase in AMBIGUOUS responses in edge cases
+```
+
+If you can’t explain the impact in 1–2 bullets, the change isn’t ready.
+
+---
+
+## 3) Run the “Golden 5” regression test (1–2 minutes)
+
+Pick **5 known cases** from your test set:
+
+* 2 clean matches
+* 2 flanker/concentration edge cases
+* 1 ambiguous or NOT_FOUND case
+
+Paste them **verbatim** into the UI:
+
+```text
+MODE: DESC_TO_PARFUMO_URL
+INPUT:
+<test case text>
+```
+
+### Pass criteria
+
+* Output format is identical
+* URLs unchanged (unless intentionally modified)
+* No added commentary
+* AMBIGUOUS still triggers correctly
+
+If even **one** behaves unexpectedly → stop and fix.
+
+---
+
+## 4) Freeze the release (30 seconds)
+
+### In GitHub
+
+1. Commit with a clear message:
+
+   ```
+   v1.1.0 – refine ambiguity logic
+   ```
+2. Tag the commit:
+
+   ```
+   v1.1.0
+   ```
+
+### In ChatGPT Project
+
+* Paste **only files from this tagged version**
+* Verify version headers visually
+
+👉 Never “half-paste” a change.
+
+---
+
+## 5) Declare the release (10 seconds)
+
+In your own notes (or commit description):
+
+```text
+FragMapper is now running v1.1.0
+```
+
+This sounds silly, but it prevents the mental drift of “what version is live?”
+
+---
+
+# Emergency Rule (very important)
+
+If you:
+
+* changed something
+* didn’t bump a version
+* didn’t update the changelog
+
+**That change doesn’t exist yet. Roll it back.**
+
+This single rule prevents 90% of long-term fragility.
+
+---
+
+## Optional: Ultra-light release checklist (printable)
+
+```
+[ ] Version bumped
+[ ] Changelog updated
+[ ] 5 tests passed
+[ ] Files pasted into Project
+[ ] Git tag created
+```
+
+---
+
+## Why this works (without bureaucracy)
+
+* Forces intentionality
+* Makes every change reversible
+* Keeps UI usage safe
+* Trains your future self
+
+You’re essentially treating FragMapper like a **rule engine**, not a chat prompt—which is exactly right.
+
+---
+
+If you want next, I can:
+
+* help you define your **Golden 5 test cases**
+* create a one-page **“Do Not Touch” list**
+* or design a **fail-closed rule** (when in doubt → AMBIGUOUS)
+
+Just tell me.

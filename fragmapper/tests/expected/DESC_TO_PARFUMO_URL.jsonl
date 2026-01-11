@@ -1,0 +1,15 @@
+{"id": "easy_001", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Parfum"}
+{"id": "easy_002", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Chanel/Bleu_de_Chanel_Eau_de_Toilette"}
+{"id": "easy_003", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Creed/Aventus"}
+{"id": "concentration_001", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Tom_Ford/Oud_Wood_Eau_de_Parfum"}
+{"id": "concentration_002", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Versace/Pour_Homme_Eau_de_Toilette"}
+{"id": "concentration_003", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Yves_Saint_Laurent/La_Nuit_de_l_Homme_Le_Parfum"}
+{"id": "flanker_001", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Dior/Sauvage_Elixir"}
+{"id": "flanker_002", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Chanel/Allure_Homme_Sport_Eau_Extreme"}
+{"id": "flanker_003", "mode": "DESC_TO_PARFUMO_URL", "output": "https://www.parfumo.com/Perfumes/Jean_Paul_Gaultier/Le_Male_Le_Parfum_Intense"}
+{"id": "ambiguous_001", "mode": "DESC_TO_PARFUMO_URL", "output": "AMBIGUOUS\nhttps://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Toilette\nhttps://www.parfumo.com/Perfumes/Dior/Sauvage_Eau_de_Parfum\nhttps://www.parfumo.com/Perfumes/Dior/Sauvage_Parfum"}
+{"id": "ambiguous_002", "mode": "DESC_TO_PARFUMO_URL", "output": "AMBIGUOUS\nhttps://www.parfumo.com/Perfumes/Giorgio_Armani/Acqua_di_Gio\nhttps://www.parfumo.com/Perfumes/Giorgio_Armani/Acqua_di_Gio_Profumo"}
+{"id": "no_match_001", "mode": "DESC_TO_PARFUMO_URL", "output": "NOT_FOUND"}
+{"id": "exclusion_001", "mode": "DESC_TO_PARFUMO_URL", "output": "NOT_FOUND"}
+{"id": "exclusion_002", "mode": "DESC_TO_PARFUMO_URL", "output": "NOT_FOUND"}
+{"id": "exclusion_003", "mode": "DESC_TO_PARFUMO_URL", "output": "NOT_FOUND"}

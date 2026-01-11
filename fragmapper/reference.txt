@@ -1,0 +1,5 @@
+cd C:\Users\skgro\OneDrive\Desktop\FragServices\LLM_ChatGPT_Projects\fragmapper; 
+C:/Users/skgro/OneDrive/Desktop/FragServices/LLM_ChatGPT_Projects/.venv/Scripts/python.exe tools/sync_project_files.py
+
+C:/Users/skgro/OneDrive/Desktop/FragServices/LLM_ChatGPT_Projects/.venv/Scripts/python.exe tests/test_consistency.py
+

@@ -1,0 +1,18 @@
+# CrosswalkMapper (Placeholder)
+
+## MODE
+MODE: PARFUMO_TO_FRAGRANTICA_URL
+
+## Purpose
+Placeholder skill module for mapping a Parfumo fragrance page (or Parfumo-identified fragrance) to the equivalent canonical Fragrantica.com fragrance page.
+
+## Status
+Not implemented yet. No mapping workflow is defined here.
+
+## Output Contract
+Must mirror the ParfumoMapper output contract style:
+- Single confident match: output ONLY the URL on a single line
+- Ambiguous: first line AMBIGUOUS, then up to 5 candidate URLs, one per line
+- No match: output exactly NOT_FOUND
+
+Do not output anything else.
